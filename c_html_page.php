@@ -31,35 +31,37 @@ class CHtmlPage
 	/** Output meta keywords */
 	private static function do_meta_keywords($keywords, $description)
 	{
-		if ($keywords)
+	    if (!$keywords && !$description)
+	    {
+	        echo "\n<meta name='robots' content='noindex,nofollow' />";
+	        return;
+	    }
+	    
+	    if ($keywords)
 		{
-			require_once $keywords;
-
-			if (is_array($meta_keywords))
-			{
-				echo "<meta name='keywords' content='";
-				foreach ($meta_keywords as $val) echo $val, ', ';
-				echo "' />";
-			}
-
-			if ($description)
-			{
-				require_once $description;
-
-				if (is_array($meta_description))
-				{
-					echo "<meta name='description' content='";
-					foreach ($meta_description as $val) echo $val, '. ';
-					echo "' />";
-				}
-			}
-
-			echo "<meta name='robots' content='index,all' />";
+		    $meta_keywords = file_get_contents($keywords);
+		    
+		    if ($meta_keywords)
+		    {
+		        $meta_keywords = str_replace("\r", "", $meta_keywords);
+		        $meta_keywords = explode("\n", $meta_keywords);
+		        $meta_keywords = implode(', ', $meta_keywords);
+		        echo "\n<meta name='keywords' content='{$meta_keywords}' />";
+		    }
 		}
-		else
+		
+		if ($description)
 		{
-			echo "<meta name='robots' content='noindex,nofollow' />";
+		    $meta_description = file_get_contents($description);
+		    
+		    if ($meta_description)
+		    {
+		        $meta_description = trim(preg_replace('/\s\s+/', ' ', $meta_description));
+		        echo "\n<meta name='description' content='{$meta_description}' />";
+		    }
 		}
+		
+		echo "\n<meta name='robots' content='index,all' />";
 	}
 
 	// Lifetime *************************************************************
@@ -76,8 +78,8 @@ class CHtmlPage
 	copyright		- the copyright notice
 	viewport        - viewport meta value
 	contentoptions  - X-Content-Type-Options
-	keywords		- keywords filename (contains $meta_keywords array)
-	description		- description filename (contains $meta_description array)
+	keywords		- keywords filename
+	description		- description filename
 	icon			- favorite icon filename
 	style			- CSS filename
 	onbeforeunload	- the javascript function called before unloading */
@@ -106,41 +108,41 @@ class CHtmlPage
 		if (!$language) $language = 'en-us';
 		
 		echo "<!DOCTYPE HTML>";
-		echo "<html lang='{$language}'>";
-		echo "<head>";
+		echo "\n<html lang='{$language}'>";
+		echo "\n<head>";
 
 		if (!$charset) $charset = 'UTF-8';
-		echo "<meta http-equiv='Content-Type' content='text/html'/>";
-		echo "<meta charset='{$charset}'/>";
-		echo "<meta name='language' content='{$language}'/>";
-		if ($author) echo "<meta name='author' content='{$author}'/>";
-		if ($copyright) echo "<meta name='copyright' content='{$copyright}'/>";
+		echo "\n<meta http-equiv='Content-Type' content='text/html'/>";
+		echo "\n<meta charset='{$charset}'/>";
+		echo "\n<meta name='language' content='{$language}'/>";
+		if ($author) echo "\n<meta name='author' content='{$author}'/>";
+		if ($copyright) echo "\n<meta name='copyright' content='{$copyright}'/>";
 
 		self::do_meta_keywords($keywords, $description);
 				
-		echo "<meta http-equiv='pragma' content='no-cache'/>";
-		echo "<meta http-equiv='cache-control' content='no-cache'/>";
-		echo "<meta http-equiv='expires' content='-1'/>";
+		echo "\n<meta http-equiv='pragma' content='no-cache'/>";
+		echo "\n<meta http-equiv='cache-control' content='no-cache'/>";
+		echo "\n<meta http-equiv='expires' content='-1'/>";
 		
 		if (!$viewport) $viewport = 'width=device-width, initial-scale=1';
-		echo "<meta name='viewport' content='{$viewport}'/>";
+		echo "\n<meta name='viewport' content='{$viewport}'/>";
 		if (!$contentoptions) $contentoptions = 'nosniff';
-		echo "<meta X-Content-Type-Options='{$contentoptions}' http-equiv='Content-Type'/>";
+		echo "\n<meta X-Content-Type-Options='{$contentoptions}' http-equiv='Content-Type'/>";
 		
 		if ($icon)
 		{
-			echo "<link rel='icon' href='", $icon, "' type='image/x-icon'/>";
-			echo "<link rel='shortcut icon' href='", $icon, "' type='image/x-icon'/>";
+			echo "\n<link rel='icon' href='", $icon, "' type='image/x-icon'/>";
+			echo "\n<link rel='shortcut icon' href='", $icon, "' type='image/x-icon'/>";
 		}
 		
 		if (self::$m_development) $title .= ' (DEVELOPMENT)';
-		echo "<title>", $title, "</title>";
+		echo "\n<title>", $title, "</title>";
 
 		if ($style)
 		{
 		    if (!is_array($style)) $style = array($style);
 		    
-		    echo "<style type='text/css' media='all'>";
+		    echo "\n<style type='text/css' media='all'>";
 		    echo "<!--";
 		    
 		    foreach ($style as $s)
@@ -152,7 +154,7 @@ class CHtmlPage
 		    echo "</style>";
 		}
 		
-		echo "</head>";
+		echo "\n</head>";
 		
 		if ($is_homepage || !isset($_SESSION['home_page']))
 		{
@@ -161,7 +163,7 @@ class CHtmlPage
 		}
 
 		$onbeforeunload = $onbeforeunload ? 'onunload="'.$onbeforeunload.'"' : null;
-		echo "<body {$onbeforeunload} style='margin:0px;'>";
+		echo "\n<body {$onbeforeunload} style='margin:0px;'>";
 	}
 
 	/** Finish HTML page */
@@ -172,8 +174,8 @@ class CHtmlPage
 	        echo self::$m_js;
 	    }
 	    
-	    echo "</body>";
-	    echo "</html>";
+	    echo "\n</body>";
+	    echo "\n</html>";
 
 		while (ob_get_level())
 		{
