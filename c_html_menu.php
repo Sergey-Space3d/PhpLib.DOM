@@ -11,6 +11,7 @@ class CHtmlMenu extends CHtmlElement
 	static protected $pages = array();
 	static protected $links = array();
 	static protected $handlers = array();
+	static protected $args = array();
 	
 	/** The constructor */
 	public function __construct($horiz = true, array $attrs = null)
@@ -60,7 +61,7 @@ class CHtmlMenu extends CHtmlElement
 	}
 	
 	/** Add menu item. Returns TD element */
-	public function add_item($inner, $href, $page = null)
+	public function add_item($inner, $href, $page = null, array $args = null)
 	{
 	    if ($page)
 	    {
@@ -75,6 +76,7 @@ class CHtmlMenu extends CHtmlElement
     		if (is_callable($href))
     		{
     		    self::$handlers[$page] = $href;
+    		    if ($args) self::$args[$page] = $args;
     		    $href = './';
     		}
     		
@@ -222,7 +224,8 @@ class CHtmlMenu extends CHtmlElement
 	    {
 	        // Call the menu handler
 	        $fn = self::$handlers[$page];
-	        return $fn($page);
+	        $args = self::$args[$page];
+	        return $args ? $fn($page, $args) : $fn($page);
 	    }
 	    
 	    if (!file_exists($page))
