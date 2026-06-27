@@ -37,6 +37,7 @@ $__classes = array(
     'Numpad'=>$__sudir.'/numpad.php',
     'Tooltip'=>$__sudir.'/tooltip.php',
     'ZebraTable'=>$__sudir.'/zebra_table.php',
+    'FieldValidator'=>$__sudir.'/field_validator.php',
 );
 CAutoloader::register($__classes);
 

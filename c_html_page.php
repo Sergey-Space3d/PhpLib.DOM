@@ -282,10 +282,10 @@ class CHtmlPage
 	
 	// Last error ***********************************************************
 	
-	/** Set the last error */
+	/** Set the last error (may be an array) */
 	public static function set_last_error($error)
 	{
-		$_SESSION['last_error'] = $error;
+	    $_SESSION['last_error'] = is_array($error) ? implode('<br/>', $error) : $error;
 	}
 
 	/** Inquire if there is the last error */
