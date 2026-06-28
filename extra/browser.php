@@ -22,7 +22,7 @@ class Browser
             
             foreach($mobile_agent as $key=>$value)
             {
-                if(preg_match($key, $_SERVER['HTTP_USER_AGENT']))
+                if(@preg_match($key, $_SERVER['HTTP_USER_AGENT']))
                 {
                     $_SESSION['is_mobile_browser'] = true;
                     break;
