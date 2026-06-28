@@ -1,4 +1,7 @@
 <?php
+// Copyright 2005-2026 Sergey Shustov.
+// License: GPL v2.  See License.txt.
+
 define('SELECT_ALL_ID', 0);
 define('SELECTOR_DATE_RANGE', 'sel_date_range');
 define('SELECTOR_DATE_FROM', 'sel_date_from');
