@@ -10,32 +10,35 @@ class CHtmlHttpRequest extends CHtmlJavaScript
     {
         parent::__construct();
         
-        $lines = array();
-        $lines[] = "var xmlhttp;";
-        $lines[] = "if (window.XMLHttpRequest)"; // Code for IE7+, Firefox, Chrome, Opera, Safari
-        $lines[] = "{";
-        $lines[] = "xmlhttp = new XMLHttpRequest();";
-        $lines[] = "}";
-        $lines[] = "else";
-        $lines[] = "{";
-        $lines[] = "xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');"; // Code for IE6, IE5
-        $lines[] = "}";
-        $lines[] = "xmlhttp.open('POST', url, true);";
-        $lines[] = "xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');";
-        $lines[] = "xmlhttp.send(data);";
-        $lines[] = "xmlhttp.onreadystatechange = function()";
-        $lines[] = "{";
-        $lines[] = "if (xmlhttp.readyState == 4 && fn)";
-        $lines[] = "{";
-        $lines[] = "if (xmlhttp.status == 200)";
-        $lines[] = "{";
-        $lines[] = "fn = (typeof(fn) == 'function') ? fn : window[fn];";
-        $lines[] = "fn.apply(this, [xmlhttp.responseText]);";
-        $lines[] = "}";
-        $lines[] = "}";
-        $lines[] = "}";
-        
-        $this->add_function("post_request", $lines, array('url', 'data', 'fn'));
+        if (!in_array("post_request", self::$functions))
+        {
+        	$lines = array();
+	        $lines[] = "var xmlhttp;";
+	        $lines[] = "if (window.XMLHttpRequest)"; // Code for IE7+, Firefox, Chrome, Opera, Safari
+	        $lines[] = "{";
+	        $lines[] = "xmlhttp = new XMLHttpRequest();";
+	        $lines[] = "}";
+	        $lines[] = "else";
+	        $lines[] = "{";
+	        $lines[] = "xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');"; // Code for IE6, IE5
+	        $lines[] = "}";
+	        $lines[] = "xmlhttp.open('POST', url, true);";
+	        $lines[] = "xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');";
+	        $lines[] = "xmlhttp.send(data);";
+	        $lines[] = "xmlhttp.onreadystatechange = function()";
+	        $lines[] = "{";
+	        $lines[] = "if (xmlhttp.readyState == 4 && fn)";
+	        $lines[] = "{";
+	        $lines[] = "if (xmlhttp.status == 200)";
+	        $lines[] = "{";
+	        $lines[] = "fn = (typeof(fn) == 'function') ? fn : window[fn];";
+	        $lines[] = "fn.apply(this, [xmlhttp.responseText]);";
+	        $lines[] = "}";
+	        $lines[] = "}";
+	        $lines[] = "}";
+	        
+	        $this->add_function("post_request", $lines, array('url', 'data', 'fn'));
+        }
     }
     
     /** Returns the post data */
